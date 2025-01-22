@@ -14,9 +14,6 @@ public class PatientServiceApplication {
 
 	@Bean
 	public ModelMapper modelMapper() {
-		ModelMapper mapper = new ModelMapper();
-		// Enable field-based mapping
-		mapper.getConfiguration().setFieldMatchingEnabled(true).setFieldAccessLevel(org.modelmapper.config.Configuration.AccessLevel.PRIVATE);
-		return mapper;
+		return new ModelMapper();
 	}
 }
