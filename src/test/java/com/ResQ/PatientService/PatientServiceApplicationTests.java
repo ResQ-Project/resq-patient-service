@@ -1,4 +1,4 @@
-package com.ResQ.PatientService;
+package com.resq.PatientService;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

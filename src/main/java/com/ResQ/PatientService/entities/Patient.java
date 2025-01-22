@@ -1,23 +1,25 @@
-package com.ResQ.PatientService.entities;
+package com.resq.PatientService.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@NoArgsConstructor
-@AllArgsConstructor
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Table(name = "patients")
 public class Patient {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-    private String firstName;
-    private String lastName;
+    private Integer patient_id;
+
+    private String first_name;
+    private String last_name;
+    private Integer age;
+    private String gender;
     private String address;
-    private String phone;
+    private String contact_number;
+
 }

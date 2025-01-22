@@ -1,6 +1,6 @@
-package com.ResQ.PatientService.repo;
+package com.resq.PatientService.repo;
 
-import com.ResQ.PatientService.entities.Patient;
+import com.resq.PatientService.entities.Patient;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface PatientRepo extends JpaRepository<Patient, Integer> {

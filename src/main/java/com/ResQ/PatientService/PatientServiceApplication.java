@@ -1,4 +1,4 @@
-package com.ResQ.PatientService;
+package com.resq.PatientService;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.SpringApplication;
@@ -14,6 +14,9 @@ public class PatientServiceApplication {
 
 	@Bean
 	public ModelMapper modelMapper() {
-		return new ModelMapper();
+		ModelMapper mapper = new ModelMapper();
+		// Enable field-based mapping
+		mapper.getConfiguration().setFieldMatchingEnabled(true).setFieldAccessLevel(org.modelmapper.config.Configuration.AccessLevel.PRIVATE);
+		return mapper;
 	}
 }
