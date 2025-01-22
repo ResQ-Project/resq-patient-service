@@ -23,7 +23,7 @@ public class PatientService {
     public void savePatient(PatientDto patientData) {
 
         if(patientRepo.existsById(patientData.getPatient_id())){
-            System.out.println("Duplicate Exists");
+            System.out.println("Duplicate Exists and test!");
         }
 
         patientRepo.save(modelMapper.map(patientData, Patient.class));
