@@ -9,7 +9,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 public class PatientDto {
-    private Integer patient_id;
+    //primary properties
+    private Integer national_id;
     private String first_name;
     private String last_name;
     private Integer age;
@@ -17,4 +18,12 @@ public class PatientDto {
     private String address;
     private String contact_number;
     private Integer ward_number;
+    private boolean isDeleted;
+    //other properties
+    private String criticality;
+    private boolean admission_status;
+    private String assigned_doctor;
+    private String resource1;
+    private String resource2;
+    private String resource3;
 }

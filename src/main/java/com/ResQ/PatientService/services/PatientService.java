@@ -25,9 +25,9 @@ public class PatientService {
     private ModelMapper modelMapper;
 
     //return only a single patient
-    public PatientDto getPatientById(int patientId){
-        if(patientRepo.existsById(patientId)){
-            Patient patient = patientRepo.findById(patientId).get();
+    public PatientDto getPatientById(int nationalId){
+        if(patientRepo.existsById(nationalId)){
+            Patient patient = patientRepo.findById(nationalId).get();
             return modelMapper.map(patient, PatientDto.class);
         }else{
             return null;
@@ -44,11 +44,37 @@ public class PatientService {
     //save a single patient
     public String savePatient(PatientDto patientData) {
         try{
-            if(patientRepo.existsById(patientData.getPatient_id())){
+            if(patientRepo.existsById(patientData.getNational_id())){
                 return VarList.RSP_DUPLICATE;
             }else{
                 patientRepo.save(modelMapper.map(patientData, Patient.class));
                 return VarList.RSP_SUCCESS;
+            }
+        }catch (Exception e){
+            return VarList.RSP_ERROR;
+        }
+    }
+
+    //update a single patient
+    public String updatePatient(int nationalId, PatientDto patientDto){
+       if(patientRepo.existsById(nationalId)){
+           patientRepo.save(modelMapper.map(patientDto, Patient.class));
+           return VarList.RSP_SUCCESS;
+       }else{
+           return VarList.RSP_ERROR;
+       }
+    }
+
+    //delete a single patient
+    public String deletePatient(int nationalId){
+        try{
+            if(patientRepo.existsById(nationalId)){
+                Patient existingPatient = patientRepo.findById(nationalId).get();
+                existingPatient.setDeleted(true);
+                patientRepo.save(existingPatient);
+                return VarList.RSP_SUCCESS;
+            }else{
+                return VarList.RSP_ERROR;
             }
         }catch (Exception e){
             return VarList.RSP_ERROR;

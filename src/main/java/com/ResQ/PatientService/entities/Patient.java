@@ -11,28 +11,23 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Table(name = "patients")
 public class Patient {
+    //primary properties
     @Id
-    @Column(name = "patient_id")
-    private Integer patient_id;
-
-    @Column(name = "first_name")
+    private Integer national_Id;
     private String first_name;
-
-    @Column(name = "last_name")
     private String last_name;
-
-    @Column(name = "age")
     private Integer age;
-
-    @Column(name = "gender")
     private String gender;
-
-    @Column(name = "address")
     private String address;
-
-    @Column(name = "contact_number")
     private String contact_number;
-
-    @Column(name = "ward_number")
     private Integer ward_number;
+    private boolean isDeleted = false;
+    //other properties
+    private String criticality;
+    private boolean admission_status;
+    private String assigned_doctor;
+    private String resource1 = "";
+    private String resource2 = "";
+    private String resource3 = "";
+
 }

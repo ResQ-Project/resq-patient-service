@@ -21,9 +21,9 @@ public class PatientController {
     private ResponseDto responseDto;
 
     //getting a single patient
-    @GetMapping("/getPatientById/{patientId}")
-    public ResponseDto getPatientById(@PathVariable int patientId){
-        PatientDto patientDto = patientService.getPatientById(patientId);
+    @GetMapping("/getPatientById/{nationalId}")
+    public ResponseDto getPatientById(@PathVariable int nationalId){
+        PatientDto patientDto = patientService.getPatientById(nationalId);
 
         if(patientDto != null){
             responseDto.setStatus_code("200");
@@ -64,10 +64,45 @@ public class PatientController {
             responseDto.setStatus_code("201");
             responseDto.setMessage("Patient saved successfully");
             responseDto.setData(patientDto);
-        }else if(res.equals("01")){
+        }else if(res.equals("02")){
             responseDto.setStatus_code("400");
-            responseDto.setMessage("Patient Already Exists");
+            responseDto.setMessage("Patient Already Exists with that National ID");
             responseDto.setData(patientDto);
+        } else{
+            responseDto.setStatus_code("400");
+            responseDto.setMessage("Error");
+            responseDto.setData(null);
+        }
+
+        return responseDto;
+    }
+
+    //update a single patient
+    @PutMapping("/updatePatient/{nationalId}")
+    public ResponseDto updatePatient(@PathVariable int nationalId, @RequestBody PatientDto patientDto){
+        String res = patientService.updatePatient(nationalId, patientDto);
+        if(res.equals("00")){
+            responseDto.setStatus_code("201");
+            responseDto.setMessage("Patient updated successfully");
+            responseDto.setData(patientDto);
+        } else{
+            responseDto.setStatus_code("400");
+            responseDto.setMessage("Error");
+            responseDto.setData(null);
+        }
+
+        return responseDto;
+    }
+
+
+    //delete a single patient
+    @PatchMapping("/deletePatient/{nationalId}")
+    public ResponseDto deletePatient(@PathVariable int nationalId){
+        String res = patientService.deletePatient(nationalId);
+        if(res.equals("00")){
+            responseDto.setStatus_code("201");
+            responseDto.setMessage("Patient Deleted successfully");
+            responseDto.setData(null);
         } else{
             responseDto.setStatus_code("400");
             responseDto.setMessage("Error");
