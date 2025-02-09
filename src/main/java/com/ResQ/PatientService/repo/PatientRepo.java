@@ -13,5 +13,4 @@ public interface PatientRepo extends JpaRepository<Patient, Integer> {
     @Query("SELECT p FROM Patient p WHERE p.ward_number = :wardNumber AND p.isDeleted = false")
     List<Patient> findAllByWardNumber(@Param("wardNumber") Integer wardNumber);
 
-
 }
