@@ -27,7 +27,7 @@ public class Patient {
 
     private String criticality;
     private boolean admission_status;
-    private String assigned_doctor;
+    private Integer assigned_doctor;
 
     // One Patient can have multiple allocated resources
     @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL, orphanRemoval = true)

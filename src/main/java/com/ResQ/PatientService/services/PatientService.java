@@ -1,6 +1,7 @@
 package com.resq.PatientService.services;
 
-import com.resq.PatientService.OutsourcedServices.ResourcesService.ResourceInterface;
+import com.resq.PatientService.OutsourcedServices.ResourceService.ResourceInterface;
+import com.resq.PatientService.OutsourcedServices.StaffService.StaffInterface;
 import com.resq.PatientService.dtos.PatientDto;
 import com.resq.PatientService.dtos.ResourceAllocationDto;
 import com.resq.PatientService.entities.Patient;
@@ -9,7 +10,6 @@ import com.resq.PatientService.repo.PatientRepo;
 import com.resq.PatientService.utils.VarList;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.PropertyMap;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,6 +29,9 @@ public class PatientService {
     //interfaces
     @Autowired
     ResourceInterface resourceInterface;
+
+    @Autowired
+    StaffInterface staffInterface;
 
     //return only a single patient
     public PatientDto getPatientById(int nationalId){
@@ -59,13 +62,14 @@ public class PatientService {
             // Convert DTO to Patient entity
             Patient patient = modelMapper.map(patientData, Patient.class);
 
+
+            //**********  Resource Allocation for newly added patient**********
             //define a new list for allocated resources (as there are more than one resource)
             List<ResourceAllocation> resourceAllocations = new ArrayList<>();
 
             // Iterate through resource IDs from request
             for (ResourceAllocationDto resourceAllocationDto : patientData.getResources()) {
                 Object data = resourceInterface.getSingleResourceById(resourceAllocationDto.getResourceId()).getData();
-
                 if (data == null) {
                     returnStatement = "There is no resource with ID: " + resourceAllocationDto.getResourceId();
                 }
@@ -75,6 +79,7 @@ public class PatientService {
 
                 if (map.containsKey("availableUnits")) {  // Correct key based on DB
                     int availableCount = (Integer) map.get("availableUnits");
+                    System.out.println(availableCount);
 
                     // Check if enough resources are available
                     if (availableCount >= resourceAllocationDto.getAllocatedUnits()) {
@@ -97,10 +102,19 @@ public class PatientService {
                     returnStatement =  "Key 'available_units' is missing in the data for resource ID: " + resourceAllocationDto.getResourceId();
                 }
             }
-
+            System.out.println(resourceAllocations);
             // Set resource allocations to the patient
             patient.setResources(resourceAllocations);
 
+
+            //**********update staff service as well with the new patientDetails*********
+            Map<String, Object> associatePatientData = new HashMap<>();    // Create a map for patient data update
+            associatePatientData.put("patientIds", Collections.singletonList(patientData.getNational_id()));
+
+            // Call the Staff Service using Feign Client
+            staffInterface.updateStaffMember(patientData.getAssigned_doctor(), associatePatientData);
+
+            //**********Save the full patient details*********
             // Save patient along with resources
             patientRepo.save(patient);
 

@@ -1,4 +1,4 @@
-package com.resq.PatientService.OutsourcedServices.ResourcesService;
+package com.resq.PatientService.OutsourcedServices.ResourceService;
 
 import com.resq.PatientService.dtos.ResponseDto;
 import org.springframework.cloud.openfeign.FeignClient;

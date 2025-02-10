@@ -21,7 +21,7 @@ public class PatientDto {
     private Integer ward_number;
     private String criticality;
     private boolean admission_status;
-    private String assigned_doctor;
+    private Integer assigned_doctor;
 
     private List<ResourceAllocationDto> resources; // Now holds resource objects
 }
