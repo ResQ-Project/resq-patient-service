@@ -56,7 +56,8 @@ public class PatientService {
         try {
             // Check if patient already exists
             if (patientRepo.existsById(patientData.getNational_id())) {
-                returnStatement = VarList.RSP_DUPLICATE;
+                returnStatement = "Patient_With_Same_ID_Exist";
+                return  returnStatement;
             }
 
             // Convert DTO to Patient entity
@@ -71,7 +72,8 @@ public class PatientService {
             for (ResourceAllocationDto resourceAllocationDto : patientData.getResources()) {
                 Object data = resourceInterface.getSingleResourceById(resourceAllocationDto.getResourceId()).getData();
                 if (data == null) {
-                    returnStatement = "There is no resource with ID: " + resourceAllocationDto.getResourceId();
+                    returnStatement = "THERE_IS_NO_RESOURCE_WITH_THAT_ID" + resourceAllocationDto.getResourceId();
+                    return returnStatement;
                 }
 
                 //iterate through the resource data fetched
@@ -96,10 +98,12 @@ public class PatientService {
                         // Add to list
                         resourceAllocations.add(resourceAllocation);
                     } else {
-                        returnStatement = "Insufficient resources for ID: " + resourceAllocationDto.getResourceId();
+                        returnStatement = "INSUFFICIENT_RESOURCES" + resourceAllocationDto.getResourceId();
+                        return returnStatement;
                     }
                 } else {
                     returnStatement =  "Key 'available_units' is missing in the data for resource ID: " + resourceAllocationDto.getResourceId();
+                    return returnStatement;
                 }
             }
             System.out.println(resourceAllocations);
@@ -118,7 +122,8 @@ public class PatientService {
             // Save patient along with resources
             patientRepo.save(patient);
 
-            returnStatement = "Success";
+            returnStatement = "SUCCESS";
+            return returnStatement;
         } catch (Exception e) {
             e.printStackTrace(); // Debugging
             returnStatement = "Error Saving Patient";
@@ -130,7 +135,7 @@ public class PatientService {
     //update a single patient
     public String updatePatient(int nationalId, PatientDto patientDto) {
         if (!patientRepo.existsById(nationalId)) {
-            return "Error: Patient Not Found";
+            return "Patient_Not_Found";
         }
 
         // Get the existing patient
@@ -180,7 +185,7 @@ public class PatientService {
             Object data = resourceInterface.getSingleResourceById(resourceDto.getResourceId()).getData();
 
             if (data == null) {
-                return "Error: Resource ID " + resourceDto.getResourceId() + " not found";
+                return "Resource_Not_Found" + resourceDto.getResourceId() + " not found";
             }
 
             LinkedHashMap<String, Object> mapExistingResource = (LinkedHashMap<String, Object>) data;
@@ -206,7 +211,7 @@ public class PatientService {
                             mapExistingResource.put("availableUnits", availableCount - additionalUnits);
                             resourceInterface.updateResource(resourceDto.getResourceId(), mapExistingResource);
                         } else {
-                            return "Error: Insufficient resources for ID: " + resourceDto.getResourceId();
+                            return "Insufficient_Resources:" + resourceDto.getResourceId();
                         }
                     } else if (newAllocatedUnits < oldAllocatedUnits) {
                         int freedUnits = oldAllocatedUnits - newAllocatedUnits;
@@ -228,17 +233,17 @@ public class PatientService {
 
                         existingPatient.getResources().add(newResource);
                     } else {
-                        return "Error: Insufficient resources for ID: " + resourceDto.getResourceId();
+                        return "Insufficient_Resources:" + resourceDto.getResourceId();
                     }
                 }
             } else {
-                return "Error: Key 'availableUnits' missing in resource ID: " + resourceDto.getResourceId();
+                return "Not_Sufficient_Available_Units" + resourceDto.getResourceId();
             }
         }
 
         // Save updated patient and resources
         patientRepo.save(existingPatient);
-        return "Success";
+        return "SUCCESS";
     }
 
 
@@ -275,15 +280,16 @@ public class PatientService {
                 existingPatient.setDeleted(true);
                 patientRepo.save(existingPatient); // Save to apply cascade deletion
 
-                returnStatement = "Success";
+                returnStatement = "SUCCESS";
+                return returnStatement;
             } else {
-                returnStatement = "Error: Patient not found";
+                returnStatement = "Patient_Not_Found";
+                return returnStatement;
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            returnStatement = "Error deleting patient";
+            returnStatement = "ERROR";
+            return returnStatement;
         }
-        return returnStatement;
     }
 
 }

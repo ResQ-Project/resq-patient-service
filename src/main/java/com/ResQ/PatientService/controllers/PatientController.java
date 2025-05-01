@@ -60,15 +60,23 @@ public class PatientController {
 
         String res = patientService.savePatient(patientDto);
 
-        if(res.equals("00")){
+        if(res.equals("SUCCESS")){
             responseDto.setStatus_code("201");
             responseDto.setMessage("Patient saved successfully");
             responseDto.setData(patientDto);
-        }else if(res.equals("02")){
+        }else if(res.equals("Patient_With_Same_ID_Exist")){
             responseDto.setStatus_code("400");
             responseDto.setMessage("Patient Already Exists with that National ID");
-            responseDto.setData(patientDto);
-        } else{
+            responseDto.setData(null);
+        }else if(res.contains("THERE_IS_NO_RESOURCE_WITH_THAT_ID")){
+            responseDto.setStatus_code("400");
+            responseDto.setMessage("Patient cannot be saved as there is no resource exist with that resource ID");
+            responseDto.setData(null);
+        }else if(res.contains("INSUFFICIENT_RESOURCES")){
+            responseDto.setStatus_code("400");
+            responseDto.setMessage("Patient cannot be saved because of insufficient resources");
+            responseDto.setData(null);
+        }else{
             responseDto.setStatus_code("400");
             responseDto.setMessage("Error");
             responseDto.setData(null);
@@ -81,13 +89,29 @@ public class PatientController {
     @PutMapping("/updatePatient/{nationalId}")
     public ResponseDto updatePatient(@PathVariable int nationalId, @RequestBody PatientDto patientDto){
         String res = patientService.updatePatient(nationalId, patientDto);
-        if(res.equals("00")){
+        if(res.equals("SUCCESS")){
             responseDto.setStatus_code("201");
             responseDto.setMessage("Patient updated successfully");
             responseDto.setData(patientDto);
-        } else{
+        } else if(res.contains("Patient_Not_Found")){
             responseDto.setStatus_code("400");
-            responseDto.setMessage("Error");
+            responseDto.setMessage("Patient Not Found");
+            responseDto.setData(null);
+        }else if(res.contains("Resource_Not_Found")){
+            responseDto.setStatus_code("400");
+            responseDto.setMessage("Resource with that resource ID is not found");
+            responseDto.setData(null);
+        }else if(res.contains("Insufficient_Resources:")){
+            responseDto.setStatus_code("400");
+            responseDto.setMessage("Insufficient Resources available for update");
+            responseDto.setData(null);
+        } else if(res.contains("Not_Sufficient_Available_Units")){
+            responseDto.setStatus_code("400");
+            responseDto.setMessage("Insufficient Resources available for update");
+            responseDto.setData(null);
+        }else{
+            responseDto.setStatus_code("400");
+            responseDto.setMessage("Error updating Patient");
             responseDto.setData(null);
         }
 
@@ -99,11 +123,15 @@ public class PatientController {
     @PatchMapping("/deletePatient/{nationalId}")
     public ResponseDto deletePatient(@PathVariable int nationalId){
         String res = patientService.deletePatient(nationalId);
-        if(res.equals("00")){
+        if(res.equals("SUCCESS")){
             responseDto.setStatus_code("201");
             responseDto.setMessage("Patient Deleted successfully");
             responseDto.setData(null);
-        } else{
+        } else if(res.contains("Patient_Not_Found")){
+            responseDto.setStatus_code("400");
+            responseDto.setMessage("Patient Not Found");
+            responseDto.setData(null);
+        }else{
             responseDto.setStatus_code("400");
             responseDto.setMessage("Error");
             responseDto.setData(null);
