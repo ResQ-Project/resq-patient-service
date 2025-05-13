@@ -47,6 +47,7 @@ public class PatientService {
     public List<PatientDto> getAllPatientsOfSingleWard(int wardNumber){
         //need to get all the patients in a ward
         List<Patient> patientsList = patientRepo.findAllByWardNumber(wardNumber);
+        
         return modelMapper.map(patientsList, new TypeToken<ArrayList<PatientDto>>(){}.getType());
     }
 
